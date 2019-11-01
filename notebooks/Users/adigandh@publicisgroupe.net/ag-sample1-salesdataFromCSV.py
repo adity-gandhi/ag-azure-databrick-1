@@ -29,6 +29,13 @@ display(df)
 
 # COMMAND ----------
 
+new_column_name_list= list(map(lambda x: x.replace(" ", "_"), df.columns))
+
+df = df.toDF(*new_column_name_list)
+display(df)
+
+# COMMAND ----------
+
 # Create a view or table
 
 temp_table_name = "Sales_Records"
@@ -42,6 +49,18 @@ df.createOrReplaceTempView(temp_table_name)
 # MAGIC /* Query the created temp table in a SQL cell */
 # MAGIC 
 # MAGIC select * from `Sales_Records`
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC 
+# MAGIC select Country, avg(Units_Sold) as Average_Units_Sold from Sales_Records group by Country
+
+# COMMAND ----------
+
+# MAGIC %python
+# MAGIC from pyspark.sql.functions import avg
+# MAGIC display(df.select("Country", "Units_Sold").where("Units_Sold > 9500").groupBy("Country").agg(avg("Units_Sold")).sort("Country"))
 
 # COMMAND ----------
 
